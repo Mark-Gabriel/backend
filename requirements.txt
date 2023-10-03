@@ -1,6 +1,5 @@
 anaconda-client==1.11.2
 anaconda-navigator==2.4.0
-anyio @ file:///C:/ci/anyio_1644481856696/work/dist
 appdirs==1.4.4
 argon2-cffi @ file:///opt/conda/conda-bld/argon2-cffi_1645000214183/work
 argon2-cffi-bindings @ file:///C:/ci/argon2-cffi-bindings_1644569876605/work
