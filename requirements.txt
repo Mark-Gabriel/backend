@@ -1,4 +1,3 @@
-alabaster @ file:///home/ktietz/src/ci/alabaster_1611921544520/work
 anaconda-client==1.11.2
 anaconda-navigator==2.4.0
 anyio @ file:///C:/ci/anyio_1644481856696/work/dist
