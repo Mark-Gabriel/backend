@@ -27,9 +27,9 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     '54.252.182.167',
-    'http://54.252.182.167/'
+   
     ]
-CORS_ORIGIN_ALLOW_ALL = True 
+# CORS_ORIGIN_ALLOW_ALL = True 
 
 # Application definition
 
