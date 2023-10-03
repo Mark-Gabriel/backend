@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'rest_framework',
      "validationServer",
-    #  "whitenoise.runserver_nostatic"
+     "whitenoise.runserver_nostatic"
 ]
 
 MIDDLEWARE = [
@@ -53,7 +53,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
 ]
 
