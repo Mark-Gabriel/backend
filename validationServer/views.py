@@ -279,7 +279,7 @@ def SSL(url_parse, hostname):  # SSL or HTTPS
 
 def readCSV(ca_provider):
 
-    path = "C:/KEN/Server/rules-main/list_of_org.csv"
+    path = "/home/ubuntu/backend/validationServer/list_of_org.csv"
     try:
         df = pd.read_csv(path)
 
