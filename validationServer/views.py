@@ -14,6 +14,7 @@ import pandas as pd
 import ssl
 import requests
 import re
+import ipaddress
 
 @api_view(['POST'])
 def validation (request):
@@ -40,6 +41,9 @@ def validation (request):
             result_regLenth = regLength(whois_response)
             result_script_tags = link_in_script(domain, soup, url)
             result_rank = websiteRank(x)
+            result_google = google_index (url)
+            result_ip =  ip_address(domain)
+            result_sfh = ServerFormHandler(soup, domain, url)
 
             print("D",domain)
             # Call the condition
@@ -52,7 +56,10 @@ def validation (request):
                 result_subDomain,
                 result_regLenth,
                 result_script_tags,
-                result_rank
+                result_rank,
+                result_google,
+                result_ip,
+                result_sfh
 
             )
 
@@ -124,8 +131,41 @@ def condition(
         result_prefix,
         result_subDomain,
         result_regLenth,result_script_tags,
-        result_rank
+        result_rank,
+        result_google,
+        result_ip,
+        result_sfh
         ):
+    
+        #Benign
+    if (
+     result_SSL == 1
+    and result_anchor == 1
+    and result_google  == 1
+    and result_ip == 1
+    ):
+
+        return 1
+
+    if (
+     result_SSL == 0
+    and result_anchor == 1
+    and result_google  == 1
+    and result_ip == 1
+    ):
+
+        return 1
+
+
+    elif   result_SSL == 1 and result_anchor == 0  and result_rank == -1 and result_google == 1:
+
+        return 1
+
+    elif   result_SSL == 1 and result_anchor == 0  and result_rank == 1 and result_sfh == 1:
+
+
+        return 1
+    #phishing
 
     if result_SSL == 0 and result_anchor == -1:  # 1 PART
 
@@ -378,7 +418,7 @@ def regLength(whois_response):  # Registration of Domain
         except:
             pass
 
-        age = (ex_date.year - cr_date) * 12 + (ex_date.month - cr_date.month)
+        age = (ex_date.year - cr_date.year) * 12 + (ex_date.month - cr_date.month)
 
         if age >= 12:
             return 1
@@ -451,3 +491,52 @@ def websiteRank(x):
     except:
         print("Rank: Phishing")
         return -1
+    
+def google_index(url):
+
+    try:
+        site = search(url, 5)
+
+        if site:
+
+            return 1
+
+        else:
+
+            return -1
+
+    except:
+
+        return 1
+
+def ip_address(domain):
+
+    try:
+
+        ipaddress.ip_address(domain)
+
+        return -1
+
+    except:
+
+        return 1
+
+def ServerFormHandler(soup, url, domain):
+        try:
+            if len(soup.find_all('form', action=True))==0:
+
+                return 1
+            else :
+                for form in soup.find_all('form', action=True):
+                    if form['action'] == "" or form['action'] == "about:blank":
+
+                        return -1
+                    elif url not in form['action'] and domain not in form['action']:
+
+                        return 0
+                    else:
+
+                        return 1
+        except:
+
+            return -1
