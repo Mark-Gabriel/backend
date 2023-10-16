@@ -15,6 +15,7 @@ import ssl
 import requests
 import re
 import ipaddress
+from googlesearch import search
 
 @api_view(['POST'])
 def validation (request):
@@ -28,10 +29,11 @@ def validation (request):
             url = request.data.get('url', '')
             domain,url_parse, domaintld, x = parsingURL(url) # get the domain
             soup, response = soupURL(url)
+
+            if(soup == -1 or response == -1 ):
+                return Response({'result': -1})
+
             whois_response = WHOIS(domain)
-
-        
-
             # Call the rules
             result_anchor = url_anchor (soup, domain, url)
             result_SSL = SSL(url_parse, domaintld)
@@ -99,7 +101,7 @@ def parsingURL(url):
     
     except:
         
-        return None
+        return -1,-1
 
 
 def soupURL(url):
@@ -111,7 +113,7 @@ def soupURL(url):
         return soup, response
 
     except:
-        return None
+        return -1,-1
 
 def WHOIS(domain):
     
@@ -345,17 +347,17 @@ def links_pointing_to_page(response):  # Links Pointing to Page
         # print(no_of_links)
         if no_of_links == 0:
 
-            print("LPTP: Legitimate")
-            return 1
+            print("LPTP: Phishing")
+            return -1
 
-        elif no_of_links <= 2:
+        elif no_of_links <= 2 and no_of_links > 0:
 
             print("LPTP: Suspicious")
             return 0
 
         else:
-            print("LPTP: Phishing")
-            return -1
+            print("LPTP: Legitimate")
+            return 1
     except:
         print("LPTP: Phishing")
         return -1
@@ -448,10 +450,10 @@ def link_in_script(domain, soup, url):  # Link to Sripting Tags
         try:
             percentage = success / float(i) * 100
             # print(percentage)
-            if percentage < 17.0:
+            if percentage < 18.0:
                 print("LinkScript: Legitimate")
                 return 1
-            elif (percentage >= 17.0) and (percentage < 81.0):
+            elif (percentage >= 18.0) and (percentage < 70.0):
                 print("LinkScript: Suspicious")
                 return 0
             else:
@@ -495,19 +497,21 @@ def websiteRank(x):
 def google_index(url):
 
     try:
-        site = search(url, 5)
+        results = []
+        for j in search(url, tld="co.in", num=5, stop=5, pause=2):
+          results.append(j)
 
-        if site:
 
-            return 1
-
-        else:
+        if len(results) == 0:
 
             return -1
 
-    except:
+        else:
 
-        return 1
+            return 1
+
+    except:
+        return -1
 
 def ip_address(domain):
 
